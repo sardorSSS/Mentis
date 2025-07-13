@@ -1,12 +1,7 @@
-from typing import Optional, List, Any
 from fastapi import HTTPException, status
-from sqlalchemy.exc import SQLAlchemyError
 from app.database import get_db
-from app.database.models.subject import Subject
-from app.database.models.section import Section
 from app.database.models.moduls import Moduls
 from app.database.models.topic import Topic
-from app.database.models.topic import Question
 
 
 def add_topic_db(module_id: int, title: str) -> Topic:

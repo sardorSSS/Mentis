@@ -28,27 +28,13 @@ def add_subject_db(name: str, description: Optional[str] = None) -> Subject:
             detail=f"Database error: {e}"
         )
 
-
-def delete_subject_db(subject_id: int) -> dict:
-    try:
-        with next(get_db()) as db:
-            subject = db.query(Subject).filter(Subject.subject_id == subject_id).first()
-            if not subject:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"Subject с ID={subject_id} не найден"
-                )
-
-            db.delete(subject)
-            db.commit()
-            return {"message": "Subject успешно удалён"}
-
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Database error: {e}"
-        )
+def get_subject_db(subject_id: int) -> Subject:
+    with next(get_db()) as db:
+        subject = db.query(Subject).get(subject_id)
+        if not subject:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Subject with id={subject_id} not found")
+        return subject
 
 def update_subject_db(subject_id: int,
             name: Optional[str] = None,
@@ -74,10 +60,25 @@ def update_subject_db(subject_id: int,
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Database error: {e}")
 
-def get_subject_db(subject_id: int) -> Subject:
-    with next(get_db()) as db:
-        subject = db.query(Subject).get(subject_id)
-        if not subject:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=f"Subject with id={subject_id} not found")
-        return subject
+
+def delete_subject_db(subject_id: int) -> dict:
+    try:
+        with next(get_db()) as db:
+            subject = db.query(Subject).filter(Subject.subject_id == subject_id).first()
+            if not subject:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Subject с ID={subject_id} не найден"
+                )
+
+            db.delete(subject)
+            db.commit()
+            return {"message": "Subject успешно удалён"}
+
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {e}"
+        )
+

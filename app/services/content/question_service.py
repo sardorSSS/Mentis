@@ -1,10 +1,6 @@
-from typing import Optional, List, Any
+from typing import Optional
 from fastapi import HTTPException, status
-from sqlalchemy.exc import SQLAlchemyError
 from app.database import get_db
-from app.database.models.subject import Subject
-from app.database.models.section import Section
-from app.database.models.moduls import Moduls
 from app.database.models.topic import Topic
 from app.database.models.topic import Question
 
@@ -55,13 +51,4 @@ def delete_question_db(question_id: int) -> dict:
         db.commit()
         return {"message": "Question deleted"}
 
-# Grade services
-
-
-
-# Comment services
-
-
-
-# Attendance services
 
