@@ -29,16 +29,17 @@ class Student(Base):
     direction = Column(String(200))
     student_status = Column(Enum(StudentStatus), default=StudentStatus.ACTIVE)
     group_id = Column(Integer, ForeignKey('groups.group_id'))
-
-
     # Связи
-    user = relationship("User", back_populates="student")
+    user = relationship("User", back_populates="student", uselist=False,
+        cascade="all, delete-orphan")
     group = relationship("Group", back_populates="students")
     universities = relationship("University", secondary=student_university_table, back_populates="students")
-
+    student_info = relationship("StudentInfo", back_populates="student")
 class StudentInfo(Base):
-    __tablename__ = 'studinfo'
+    __tablename__ = 'student_info'
+    student_id = Column(Integer, ForeignKey("students.student_id") ,primary_key = True)
     hobby = Column(String(500))
     sex = Column(String(10))
     address = Column(Text)
     birthday = Column(Date)
+    student = relationship("Student", back_populates="student_info")

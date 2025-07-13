@@ -9,7 +9,8 @@ class Moduls(Base):
     start_topic_bio = Column(Integer)
     end_topic_chem = Column(Integer)
     end_topic_bio = Column(Integer)
-    score = Column(Float)
+    exam
+
 
 
 

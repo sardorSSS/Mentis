@@ -20,3 +20,4 @@ class Subject(Base):
     dtm_exams = relationship("DTM_exam", back_populates="subject")
     current_ratings = relationship("Current_rating", back_populates="subject")
     attendances = relationship("Attendance", back_populates="subject")
+

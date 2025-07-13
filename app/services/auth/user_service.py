@@ -137,18 +137,17 @@ def login_db(phone, password):
             if not check_pw(password, user.password):
                 return False
         return user.user_id
+def get_user_by_id(user_id: int):
+    with next(get_db()) as db:
+        user = db.query(User).filter(User.user_id == user_id).first()
 
-def get_user_info_db(user_id):
-    try:
-        with next(get_db()) as db:
-            user = db.query(User).filter_by(user_id = user_id).first()
-            if user:
-                return {"message": "Пользователь с таким ID не найден"}
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Пользователь не найден"
+            )
 
-            return True, user.user_id
-    except SQLAlchemyError as e:
-        db.rollback()
-        return False, f"Ошибка базы данных: {e}"
+        return UserOut.from_orm(user)
 
 
 

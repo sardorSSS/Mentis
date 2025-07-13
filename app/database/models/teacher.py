@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 from .base import Base
 import enum
 
-
 class StudentStatus(enum.Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
@@ -16,7 +15,7 @@ teacher_subject_table = Table(
 
 class Teacher(Base):
     __tablename__ = 'teachers'
-    teacher_id = Column(Integer, ForeignKey('users.user_id'), primary_key=True)
+    teacher_id = Column(Integer, ForeignKey('users.user_id'), primary_key=True, ondelete='CASCADE')
     teacher_schedule = Column(Text)
     teacher_status = Column(Enum(StudentStatus), default=StudentStatus.ACTIVE)
 
@@ -26,12 +25,17 @@ class Teacher(Base):
     groups = relationship("Group", back_populates="teacher")
     attendances = relationship("Attendance", back_populates="teacher")
     comments = relationship("Comments", back_populates="teacher")
+    teacher_info = relationship("TeacherInfo", back_populates="teacher")
 
 class TeacherInfo(Base):
-    __tablename__ = 'teacherinfo'
+    __tablename__ = 'teacher_info'
+    teacher_info_id = Column(Integer, ForeingKey ="Teacher.teacher_id", primary_key=True)
     teacher_employment = Column(String)
     teacher_number = Column(String(15))
     dop_info = Column(String(100))
+    teacher = relationship("Teacher", back_populates=teacher_info)
+
+
 
 
 

@@ -15,6 +15,7 @@ class DtmExam(Base):
     student = relationship("Student", back_populates="dtm_exams")
     subject = relationship("Subject", back_populates="dtm_exams")
 
+#Промежуточный экзамен
 class SectionExam(Base):
     __tablename__ = 'section_exams'
     section_exam_id = Column(Integer,primary_key = True , autoincrement = True)
@@ -26,6 +27,7 @@ class SectionExam(Base):
     student = relationship("Student", back_populates="section_exams")
     section = relationship("Section", back_populates="section_exams")
 
+#Итоговый экзамен
 class BlockExam(Base):
     __tablename__ = 'block_exams'
     block_exam_id = Column(Integer, primary_key = True , autoincrement = True)
@@ -36,3 +38,6 @@ class BlockExam(Base):
     # Связи
     student = relationship("Student", back_populates="block_exams")
     block = relationship("Block", back_populates="block_exams")
+
+class ModulExam(Base):
+
