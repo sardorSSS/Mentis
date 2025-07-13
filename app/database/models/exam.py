@@ -1,6 +1,7 @@
 from sqlalchemy import Float, DateTime, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base
+from app.database.models.moduls import Moduls
 
 class DtmExam(Base):
     __tablename__ = 'dtm_exams'
@@ -40,4 +41,13 @@ class BlockExam(Base):
     block = relationship("Block", back_populates="block_exams")
 
 class ModulExam(Base):
+    __tablename__ = 'modul_exam'
+    modul_id = Column(Integer, ForeignKey('moduls.modul_id'), primary_key=True)
+    student_id = Column(Column(Integer, ForeignKey('students.student_id'), nullable=False))
+    chem_score = Column(Float, nullable = False)
+    bio_score = Column(Float, nullable = False)
+    exam_date = Column(DateTime)
+    moduls = relationship("Moduls", back_populates = "exam")
+    student = relationship("Student", back_populates="moduls_exams")
+
 

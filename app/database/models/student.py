@@ -2,6 +2,7 @@ from sqlalchemy import Date, Column, Integer, ForeignKey, String, Text, Enum, Ta
 from sqlalchemy.orm import relationship
 from .base import Base
 import enum
+from app.database.models.exam import ModulExam
 
 class StudentStatus(enum.Enum):
     ACTIVE = "active"
@@ -35,6 +36,8 @@ class Student(Base):
     group = relationship("Group", back_populates="students")
     universities = relationship("University", secondary=student_university_table, back_populates="students")
     student_info = relationship("StudentInfo", back_populates="student")
+    moduls_exam = relationship("ModulsExam", back_populates="student")
+
 class StudentInfo(Base):
     __tablename__ = 'student_info'
     student_id = Column(Integer, ForeignKey("students.student_id") ,primary_key = True)

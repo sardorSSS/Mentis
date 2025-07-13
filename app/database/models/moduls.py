@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer,Float, String
 from sqlalchemy.orm import relationship
 from .base import Base
+from app.database.models.exam import ModulExam
 
 class Moduls(Base):
     __tablename__ = 'moduls'
@@ -9,7 +10,8 @@ class Moduls(Base):
     start_topic_bio = Column(Integer)
     end_topic_chem = Column(Integer)
     end_topic_bio = Column(Integer)
-    exam
+    exam = relationship("ModulsExam", back_populates="moduls")
+
 
 
 
