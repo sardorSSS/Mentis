@@ -13,3 +13,4 @@ def check_pw(password: str, hashed_password: str) -> bool:
         return False
     except Exception:
         return "что-то не так"
+

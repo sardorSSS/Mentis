@@ -33,7 +33,7 @@ class TeacherInfo(Base):
     teacher_employment = Column(String)
     teacher_number = Column(String(15))
     dop_info = Column(String(100))
-    teacher = relationship("Teacher", back_populates=teacher_info)
+    teacher = relationship("Teacher", back_populates='teacher_info')
 
 
 

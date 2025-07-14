@@ -137,6 +137,7 @@ def login_db(phone, password):
             if not check_pw(password, user.password):
                 return False
         return user.user_id
+
 def get_user_by_id(user_id: int):
     with next(get_db()) as db:
         user = db.query(User).filter(User.user_id == user_id).first()

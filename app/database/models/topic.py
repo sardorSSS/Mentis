@@ -24,10 +24,11 @@ class TopicTest(Base):
     topic_id = Column(Integer, ForeignKey('topics.topic_id'), nullable=False)
     score = Column(Float)
     attempt_date = Column(DateTime)
+
     # Связи
     student = relationship("Student", back_populates="topic_tests")
     topic = relationship("Topic", back_populates="topic_tests")
-
+# текущая оценка
 class CurrentRating(Base):
     __tablename__ = 'current_ratings'
     rating_id = Column(Integer, primary_key = True , autoincrement = True)
@@ -41,17 +42,4 @@ class CurrentRating(Base):
     subject = relationship("Subject", back_populates="current_ratings")
 
 
-class Question(Base):
-    __tablename__ = 'questions'
-    question_id = Column(Integer, primary_key = True , autoincrement = True)
-    topic_id = Column(Integer, ForeignKey('topics.topic_id'), nullable=False)
-    text = Column(Text, nullable=False)
-    answer_1 = Column(String(500))
-    answer_2 = Column(String(500))
-    answer_3 = Column(String(500))
-    answer_4 = Column(String(500))
-    correct_answer = Column(Integer, nullable=False)  # номер правильного ответа (1-4)
-    difficulty_level = Column(Integer, default=1)  # 1-5
-    explanation = Column(Text)
-    # Связи
-    topic = relationship("Topic", back_populates="questions")
+

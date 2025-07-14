@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, DateTime, String, Boolean, Enum
 from sqlalchemy.orm import relationship
 from .base import Base
 import enum
-from datetime import datetime
+from sqlalchemy import func
 
 class UserRole(enum.Enum):
     STUDENT = "student"
@@ -18,19 +18,17 @@ class User(Base):
     phone = Column(String(20), unique=True)
     email = Column(String(150), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
-    registration_date = Column(DateTime, default=datetime.utcnow)
+    registration_date = Column(DateTime(timezone=True),server_default=func.now())
     role = Column(Enum(UserRole), nullable=False)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True),server_default=func.now())
+    updated_at = Column(DateTime(timezone=True),server_default=func.now())
     photo = Column(String(255), nullable=True)
     # Полиморфные связи
     student = relationship("Student", back_populates="user", uselist=False)
     parent = relationship("ParentInfo", back_populates="user", uselist=False)
     teacher = relationship("Teacher", back_populates="user", uselist=False)
     admin = relationship("Admin", back_populates="user", uselist=False)
-
-
     # Связи с экзаменами и оценками
     dtm_exams = relationship("DTM_exam", back_populates="student")
     section_exams = relationship("Section_exam", back_populates="student")
