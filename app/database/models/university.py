@@ -21,7 +21,7 @@ class University(Base):
     name = Column(String(300), nullable=False)
     entrance_score = Column(Float)
     type = Column(Enum(UniversityType))
-    location = Column(String(200))
-    website = Column(String(300))
+    location = Column(String(200), nullable = False)
+    website = Column(String(300), nullable = False)
     # Связи
     students = relationship("Student", secondary=student_university_table, back_populates="universities")

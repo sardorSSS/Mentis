@@ -29,7 +29,7 @@ class Teacher(Base):
 
 class TeacherInfo(Base):
     __tablename__ = 'teacher_info'
-    teacher_info_id = Column(Integer, ForeingKey ="Teacher.teacher_id", primary_key=True)
+    teacher_info_id = Column(Integer, ForeignKey ("teadhers.teacher_id"), primary_key=True)
     teacher_employment = Column(String)
     teacher_number = Column(String(15))
     dop_info = Column(String(100))

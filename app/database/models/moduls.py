@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer,Float, String
 from sqlalchemy.orm import relationship
 from .base import Base
-from app.database.models.exam import ModulExam
 
 class Moduls(Base):
     __tablename__ = 'moduls'
