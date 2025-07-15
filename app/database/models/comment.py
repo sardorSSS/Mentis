@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, Text, DateTime
 from sqlalchemy.orm import relationship
-from datetime import datetime
 from .base import Base
 from sqlalchemy import func
 
@@ -11,7 +10,6 @@ class Comments(Base):
     student_id = Column(Integer, ForeignKey('students.student_id'), nullable=False)
     comment_text = Column(Text, nullable=False)
     comment_date = Column(DateTime(timezone=True),server_default=func.now())
-
     # Связи
     teacher = relationship("Teacher", back_populates="comments")
     student = relationship("Student", back_populates="comments")
