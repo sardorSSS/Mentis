@@ -1,44 +1,53 @@
-from typing import Optional, List, Any
 from fastapi import HTTPException, status
-from sqlalchemy.exc import SQLAlchemyError
 from app.database import get_db
-from app.database.models.subject import Subject
-from app.database.models.section import Section
-from app.database.models.moduls import Moduls
-from app.database.models.topic import Topic
-from app.database.models.topic import Question
+from app.database.models.academic import Moduls
 
-def add_module_db(section_id: int, name: str) -> Moduls:
+def add_modul_db(start_topic_chem: int, start_topic_bio: int,end_topic_chem: int,
+                 end_topic_bio: int) -> Moduls:
     with next(get_db()) as db:
-        if not db.query(Section).get(section_id):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=f"Section id={section_id} not found")
-        mod = Moduls(section_id=section_id, name=name)
-        db.add(mod)
+        new_modul = Moduls(start_topic_chem=start_topic_chem,start_topic_bio=start_topic_bio,
+                           end_topic_chem=end_topic_chem,end_topic_bio=end_topic_bio)
+        db.add(new_modul)
         db.commit()
-        db.refresh(mod)
-        return mod
+        db.refresh(new_modul)
+        return new_modul
 
-
-def update_module_db(module_id: int, name: Optional[str] = None) -> Moduls:
+def delete_modul_db(modul_id: int) -> dict:
     with next(get_db()) as db:
-        mod = db.query(Moduls).get(module_id)
-        if not mod:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=f"Module id={module_id} not found")
-        if name is not None:
-            mod.name = name
+        modul = db.query(Moduls).filter_by(modul_id=modul_id).first()
+        if not modul:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Модуль не найден"
+            )
+        db.delete(modul)
         db.commit()
-        db.refresh(mod)
-        return mod
+        return {"status": "Удалён"}
 
-
-def delete_module_db(module_id: int) -> dict:
+def find_modul_db(modul_id: int) -> Moduls:
     with next(get_db()) as db:
-        mod = db.query(Moduls).get(module_id)
-        if not mod:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=f"Module id={module_id} not found")
-        db.delete(mod)
+        modul = db.query(Moduls).filter_by(modul_id=modul_id).first()
+        if not modul:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Модуль не найден")
+        return modul
+
+def edit_modul_db(modul_id: int, start_topic_chem: int = None,start_topic_bio: int = None,
+                  end_topic_chem: int = None,end_topic_bio: int = None) -> Moduls:
+    with next(get_db()) as db:
+        modul = db.query(Moduls).filter_by(modul_id=modul_id).first()
+        if not modul:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Модуль не найден")
+
+        if start_topic_chem is not None:
+            modul.start_topic_chem = start_topic_chem
+        if start_topic_bio is not None:
+            modul.start_topic_bio = start_topic_bio
+        if end_topic_chem is not None:
+            modul.end_topic_chem = end_topic_chem
+        if end_topic_bio is not None:
+            modul.end_topic_bio = end_topic_bio
+
         db.commit()
-        return {"message": "Module deleted"}
+        db.refresh(modul)
+        return modul
+

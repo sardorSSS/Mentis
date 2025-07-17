@@ -1,4 +1,4 @@
-from sqlalchemy import (Float, DateTime, Column, Integer, ForeignKey, Text, 
+from sqlalchemy import (Float, DateTime, Column, Integer, ForeignKey, Text,
                         Enum, Table, JSON, CheckConstraint, String, Boolean)
 from sqlalchemy.orm import relationship
 from .base import Base
@@ -21,7 +21,6 @@ class CommentType(enum.Enum):
     POSITIVE = "positive"
     NEGATIVE = "negative"
     NEUTRAL = "neutral"
-    WARNING = "warning"
 
 # Ассоциативные таблицы для тестирования
 question_category = Table(
@@ -42,11 +41,11 @@ class DtmExam(Base):
     exam_id = Column(Integer, primary_key=True, autoincrement=True)
     student_id = Column(Integer, ForeignKey('students.student_id'), nullable=False)
     subject_id = Column(Integer, ForeignKey('subjects.subject_id'), nullable=False)
-    common_score = Column(Float)
-    second_subject_score = Column(Float)
-    first_subject_score = Column(Float)
+    common_score = Column(Float, nullable = False )
+    second_subject_score = Column(Float, nullable = False)
+    first_subject_score = Column(Float, nullable = False)
+    total_score = Column(Float , nullable = False)
     exam_date = Column(DateTime)
-    
     # Связи
     student = relationship("Student", back_populates="dtm_exams")
     subject = relationship("Subject", back_populates="dtm_exams")
@@ -58,7 +57,7 @@ class SectionExam(Base):
     section_id = Column(Integer, ForeignKey('sections.section_id'), nullable=False)
     score = Column(Float)
     exam_date = Column(DateTime)
-    
+
     # Связи
     student = relationship("Student", back_populates="section_exams")
     section = relationship("Section", back_populates="section_exams")
@@ -71,7 +70,6 @@ class BlockExam(Base):
     subject_id = Column(Integer, ForeignKey('subjects.subject_id'), nullable=False)
     score = Column(Float)
     exam_date = Column(DateTime)
-    
     # Связи
     student = relationship("Student", back_populates="block_exams")
     block = relationship("Block", back_populates="block_exams")
@@ -85,7 +83,7 @@ class ModulExam(Base):
     chem_score = Column(Float, nullable=False)
     bio_score = Column(Float, nullable=False)
     exam_date = Column(DateTime)
-    
+
     # Связи
     moduls = relationship("Moduls", back_populates="exams")
     student = relationship("Student", back_populates="modul_exams")
@@ -97,7 +95,6 @@ class TopicTest(Base):
     topic_id = Column(Integer, ForeignKey('topics.topic_id'), nullable=False)
     score = Column(Float)
     attempt_date = Column(DateTime)
-    
     # Связи
     student = relationship("Student", back_populates="topic_tests")
     topic = relationship("Topic", back_populates="topic_tests")
@@ -111,7 +108,7 @@ class CurrentRating(Base):
     current_score = Column(Float, nullable=False)
     second_current_score = Column(Float, nullable=False)
     last_updated = Column(DateTime, default=datetime.utcnow)
-    
+
     # Связи
     student = relationship("Student", back_populates="current_ratings")
     subject = relationship("Subject", back_populates="current_ratings")
@@ -123,14 +120,13 @@ class Category(Base):
     __tablename__ = 'categories'
     category_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), unique=True, nullable=False)
-    
     # Связи
     questions = relationship("Question", secondary=question_category, back_populates="categories")
 
 class Question(Base):
     __tablename__ = 'questions'
     question_id = Column(Integer, primary_key=True, autoincrement=True)
-    topic_id = Column(Integer, ForeignKey('topics.topic_id'), nullable=False)
+    topic_id = Column(Integer, ForeignKey('topics.topic_id'))
     text = Column(Text, nullable=False)
     answer_1 = Column(String(500))
     answer_2 = Column(String(500))
@@ -138,7 +134,6 @@ class Question(Base):
     answer_4 = Column(String(500))
     correct_answer = Column(Integer, nullable=False)
     explanation = Column(Text)
-    
     # Связи
     topic = relationship("Topic", back_populates="questions")
     categories = relationship("Category", secondary=question_category, back_populates="questions")
@@ -157,6 +152,7 @@ class Test(Base):
             name='verification_time_limit_ck'),)
 
     # Связи
+
     questions = relationship("Question", secondary=test_question, back_populates="tests")
     results = relationship("TestResult", back_populates="test")
 
@@ -170,7 +166,7 @@ class TestResult(Base):
     total_correct = Column(Integer, nullable=False)
     total_questions = Column(Integer, nullable=False)
     taken_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     # Связи
     test = relationship("Test", back_populates="results")
     user = relationship("User", back_populates="test_results")
@@ -182,10 +178,9 @@ class Attendance(Base):
     attendance_id = Column(Integer, primary_key=True, autoincrement=True)
     student_id = Column(Integer, ForeignKey('students.student_id'), nullable=False)
     lesson_date_time = Column(DateTime, nullable=False)
-    type = Column(Enum(AttendanceType), nullable=False)
+    att_status = Column(Enum(AttendanceType), nullable=False)
     subject_id = Column(Integer, ForeignKey('subjects.subject_id'), nullable=False)
     topic_id = Column(Integer, ForeignKey('topics.topic_id'), nullable=False)
-    
     # Связи
     student = relationship("Student", back_populates="attendances")
     subject = relationship("Subject", back_populates="attendances")
@@ -198,7 +193,8 @@ class Comments(Base):
     student_id = Column(Integer, ForeignKey('students.student_id'), nullable=False)
     comment_text = Column(Text, nullable=False)
     comment_date = Column(DateTime(timezone=True), server_default=func.now())
-    
+    comment_type = Column(Enum(CommentType), nullable=False)
     # Связи
     teacher = relationship("Teacher", back_populates="comments")
     student = relationship("Student", back_populates="comments")
+
