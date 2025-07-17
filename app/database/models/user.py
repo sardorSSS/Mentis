@@ -13,12 +13,10 @@ class UserRole(enum.Enum):
 class StudentStatus(enum.Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
-    SUSPENDED = "suspended"
 
 class TeacherStatus(enum.Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
-    ON_LEAVE = "on_leave"
 
 class AdminStatus(enum.Enum):
     ACTIVE = "active"
@@ -54,13 +52,11 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     photo = Column(String(255), nullable=True)
-    
     # Полиморфные связи
     student = relationship("Student", back_populates="user", uselist=False)
     parent = relationship("ParentInfo", back_populates="user", uselist=False)
     teacher = relationship("Teacher", back_populates="user", uselist=False)
     admin = relationship("Admin", back_populates="user", uselist=False)
-    test_results = relationship("TestResult", back_populates="user")
 
 class Student(Base):
     __tablename__ = 'students'
