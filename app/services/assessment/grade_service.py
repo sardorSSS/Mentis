@@ -6,6 +6,7 @@ from sqlalchemy import func
 from app.database.models.assesment import
 
 
+
 def add_dtm_exam_db(student_id: int, subject_id: int, common_score: float,
     second_subject_score: float, first_subject_score: float,
                     total_score: float ,exam_date: Optional[datetime] = None) -> DtmExam:

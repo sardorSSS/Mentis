@@ -17,7 +17,7 @@ class Subject(Base):
     
     # Связи
     teachers = relationship("Teacher", secondary="teacher_subject", back_populates="subjects")
-    sections = relationship("Section", back_populates="subject")
+    sections = relationship("Section", back_populates="subject", cascade="all, delete-orphan")
     groups = relationship("Group", back_populates="subject")
     dtm_exams = relationship("DtmExam", back_populates="subject")
     current_ratings = relationship("CurrentRating", back_populates="subject")
@@ -33,8 +33,8 @@ class Section(Base):
     # Связи
     subject = relationship("Subject", back_populates="sections")
     blocks = relationship("Block", back_populates="section")
-    section_exams = relationship("SectionExam", back_populates="section")
-    section_materials = relationship('SectionMaterial', back_populates="section")
+    section_exams = relationship("SectionExam", back_populates="section", cascade="all, delete-orphan")
+    section_materials = relationship('SectionMaterial', back_populates="section", cascade="all, delete-orphan")
 
 class SectionMaterial(Base):
     __tablename__ = 'section_materials'
@@ -54,7 +54,7 @@ class Block(Base):
     
     # Связи
     section = relationship("Section", back_populates="blocks")
-    topics = relationship("Topic", back_populates="block")
+    topics = relationship("Topic", back_populates="block", cascade="all, delete-orphan")
     block_exams = relationship("BlockExam", back_populates="block")
 
 class Topic(Base):

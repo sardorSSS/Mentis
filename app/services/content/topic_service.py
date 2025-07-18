@@ -12,6 +12,7 @@ def add_topic_db(block_id: int,name: str,homework: str = None,number: int = None
         db.refresh(new_topic)
         return new_topic
 
+
 def delete_topic_db(topic_id: int) -> dict:
     with next(get_db()) as db:
         top = db.query(Topic).filter_by(topic_id=topic_id).first()

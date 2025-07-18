@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy import func
 import enum
 from enum import Enum as PyEnum
+from sqlalchemy.ext.mutable import MutableList
 
 class AttendanceType(enum.Enum):
     PRESENT = "present"
@@ -35,8 +36,8 @@ class DtmExam(Base):
     first_subject_score = Column(Float, nullable = False)
     total_score = Column(Float , nullable = False)
     exam_date = Column(DateTime, nullable = True)
-    category_correct = Column(JSON, nullable=True)
-    category_mistake = Column(JSON, nullable=True)
+    category_correct =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
+    category_mistake =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
     # Связи
     student = relationship("Student", back_populates="dtm_exams")
     subject = relationship("Subject", back_populates="dtm_exams")
@@ -48,8 +49,8 @@ class SectionExam(Base):
     section_id = Column(Integer, ForeignKey('sections.section_id'), nullable=False)
     score = Column(Float)
     exam_date = Column(DateTime)
-    category_correct = Column(JSON, nullable=True)
-    category_mistake = Column(JSON, nullable=True)
+    category_correct =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
+    category_mistake =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
     # Связи
     student = relationship("Student", back_populates="section_exams")
     section = relationship("Section", back_populates="section_exams")
@@ -62,8 +63,8 @@ class BlockExam(Base):
     subject_id = Column(Integer, ForeignKey('subjects.subject_id'), nullable=False)
     score = Column(Float)
     exam_date = Column(DateTime)
-    category_correct = Column(JSON, nullable=True)
-    category_mistake = Column(JSON, nullable=True)
+    category_correct =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
+    category_mistake =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
     # Связи
     student = relationship("Student", back_populates="block_exams")
     block = relationship("Block", back_populates="block_exams")
@@ -77,8 +78,8 @@ class ModulExam(Base):
     chem_score = Column(Float, nullable=False)
     bio_score = Column(Float, nullable=False)
     exam_date = Column(DateTime)
-    category_correct = Column(JSON, nullable=True)
-    category_mistake = Column(JSON, nullable=True)
+    category_correct =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
+    category_mistake =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
 
     # Связи
     moduls = relationship("Moduls", back_populates="exams")
@@ -123,7 +124,7 @@ class Question(Base):
     answer_4 = Column(String(500))
     correct_answer = Column(Integer, nullable=False)
     explanation = Column(Text, nullable = True)
-    category = Column(JSON, nullable=False, default=list)
+    category =  Column(MutableList.as_mutable(JSON),default=list, nullable=False)
     # Связи
     topic = relationship("Topic", back_populates="questions")
 

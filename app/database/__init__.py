@@ -1,24 +1,27 @@
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-
-#Формат базы данных и прописываем путь к базе данных
-
+from sqlalchemy import event
+# формат и название нашей базы данных
 SQLALCHEMY_DATABASE_URI = "sqlite:///data.db"
-
-#Вариант с postgres
-#SQLALCHEMY_DATABASE_URI = "postgresql://postgres:admin@localhost/quiz61"
-
+# вариант postgres
+# SQLALCHEMY_DATABASE_URI = "postgresql://postgres:admin@localhost/quiz61"
+#                            ^ формат     ^ юзер   ^пароль ^хост  ^ название бд
+# создаем движок
 engine = create_engine(SQLALCHEMY_DATABASE_URI)
-
-#создаём генератор сессий
-Sessionlocal = sessionmaker(bind = engine)
-
+# создаем генератор сессий
+SessionLocal = sessionmaker(bind=engine)
+# создаем класс для наследования в моделях
 Base = declarative_base()
+# настройка управления связями в таблице
+@event.listens_for(engine, "connect")
+def set_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON;")
+    cursor.close()
 
-#создаём функцию генератор сессий
-
+# создаем функцию-генератор сессий
 def get_db():
-    db = Sessionlocal()
+    db = SessionLocal()
     try:
         yield db
     except Exception:
@@ -26,11 +29,3 @@ def get_db():
         raise
     finally:
         db.close()
-
-
-
-
-
-
-
-
